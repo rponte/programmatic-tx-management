@@ -1,10 +1,10 @@
 package br.com.triadworks.tx.jpa;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,29 +15,25 @@ import org.slf4j.LoggerFactory;
 import br.com.triadworks.sample.model.Produto;
 import br.com.triadworks.tx.spi.DataAccessException;
 import br.com.triadworks.tx.spi.TransactionCallback;
+import br.com.triadworks.tx.spi.TransactionManager;
 import br.com.triadworks.tx.spi.TransactionVoidCallback;
 
 public class TransactionManagerTest {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionManagerTest.class);
 
-	private JpaTransactionManager txManager;
+	private TransactionManager txManager;
+	private EntityManagerFactory entityManagerFactory;
 	
 	@Before
 	public void setUp() {
-		txManager = new JpaTransactionManager();
+		entityManagerFactory = Persistence.createEntityManagerFactory("sample-pu");
+		txManager = new JpaTransactionManager(entityManagerFactory);
 	}
 	
 	@After
 	public void cleanUp() {
-		txManager.doInTransaction(new TransactionVoidCallback() {
-			@Override
-			public void execute(EntityManager entityManager) {
-				entityManager
-					.createQuery("delete from Produto")
-					.executeUpdate();
-			}
-		});
+		entityManagerFactory.close();
 	}
 	
 	@Test

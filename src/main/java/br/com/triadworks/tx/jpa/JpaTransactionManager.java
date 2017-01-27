@@ -1,6 +1,7 @@
 package br.com.triadworks.tx.jpa;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import br.com.triadworks.tx.spi.DataAccessException;
@@ -10,14 +11,10 @@ import br.com.triadworks.tx.spi.TransactionVoidCallback;
 
 public class JpaTransactionManager implements TransactionManager {
 
-	private JpaUtils jpaUtils;
+	private final EntityManagerFactory factory;
 
-	public JpaTransactionManager() {
-		this(new JpaUtils());
-	}
-
-	public JpaTransactionManager(JpaUtils jpaUtils) {
-		this.jpaUtils = jpaUtils;
+	public JpaTransactionManager(EntityManagerFactory factory) {
+		this.factory = factory;
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +27,7 @@ public class JpaTransactionManager implements TransactionManager {
 		EntityTransaction tx = null;
 		try {
 
-			entityManager = jpaUtils.getEntityManager();
+			entityManager = factory.createEntityManager();
 			tx = entityManager.getTransaction();
 
 			tx.begin(); // inicia transação
@@ -45,7 +42,9 @@ public class JpaTransactionManager implements TransactionManager {
 			}
 			throw new DataAccessException(e);
 		} finally {
-			jpaUtils.close(entityManager);
+			if (entityManager != null) {
+				entityManager.close();
+			}
 		}
 	}
 
