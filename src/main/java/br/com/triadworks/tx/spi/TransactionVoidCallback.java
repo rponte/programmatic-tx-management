@@ -1,10 +1,8 @@
 package br.com.triadworks.tx.spi;
 
-import javax.persistence.EntityManager;
-
 @FunctionalInterface
-public interface TransactionVoidCallback {
+public interface TransactionVoidCallback<T> {
 
-	public void execute(EntityManager entityManager);
+	public void execute(T t);
 	
 }

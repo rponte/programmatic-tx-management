@@ -9,7 +9,7 @@ import br.com.triadworks.tx.spi.TransactionCallback;
 import br.com.triadworks.tx.spi.TransactionManager;
 import br.com.triadworks.tx.spi.TransactionVoidCallback;
 
-public class JpaTransactionManager implements TransactionManager {
+public class JpaTransactionManager implements TransactionManager<EntityManager> {
 
 	private final EntityManagerFactory factory;
 
@@ -21,7 +21,7 @@ public class JpaTransactionManager implements TransactionManager {
 	 * @see br.com.triadworks.tx.jpa.TransactionManagerI#doInTransactionWithReturn(br.com.triadworks.tx.jpa.TransactionCallback)
 	 */
 	@Override
-	public <T> T doInTransactionWithReturn(final TransactionCallback<T> callback) throws DataAccessException {
+	public <R> R doInTransactionWithReturn(TransactionCallback<EntityManager, R> callback) throws DataAccessException {
 
 		EntityManager entityManager = null;
 		EntityTransaction tx = null;
@@ -31,7 +31,7 @@ public class JpaTransactionManager implements TransactionManager {
 			tx = entityManager.getTransaction();
 
 			tx.begin(); // inicia transação
-			T result = callback.execute(entityManager);
+			R result = callback.execute(entityManager);
 			tx.commit(); // comita transação
 
 			return result;
@@ -48,12 +48,9 @@ public class JpaTransactionManager implements TransactionManager {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see br.com.triadworks.tx.jpa.TransactionManagerI#doInTransaction(br.com.triadworks.tx.jpa.TransactionVoidCallback)
-	 */
 	@Override
-	public void doInTransaction(final TransactionVoidCallback callback) throws DataAccessException {
-		doInTransactionWithReturn(new TransactionCallback<Void>() {
+	public void doInTransaction(TransactionVoidCallback<EntityManager> callback) throws DataAccessException {
+		doInTransactionWithReturn(new JpaTransactionCallback<Void>() {
 			@Override
 			public Void execute(EntityManager entityManager) {
 				callback.execute(entityManager);
@@ -61,4 +58,5 @@ public class JpaTransactionManager implements TransactionManager {
 			}
 		});
 	}
+	
 }

@@ -14,15 +14,13 @@ import org.slf4j.LoggerFactory;
 
 import br.com.triadworks.sample.model.Produto;
 import br.com.triadworks.tx.spi.DataAccessException;
-import br.com.triadworks.tx.spi.TransactionCallback;
 import br.com.triadworks.tx.spi.TransactionManager;
-import br.com.triadworks.tx.spi.TransactionVoidCallback;
 
 public class TransactionManagerTest {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionManagerTest.class);
 
-	private TransactionManager txManager;
+	private TransactionManager<EntityManager> txManager;
 	private EntityManagerFactory entityManagerFactory;
 	
 	@Before
@@ -41,14 +39,14 @@ public class TransactionManagerTest {
 		
 		Produto ipad = new Produto("iPad Retina Display");
 		
-		txManager.doInTransaction(new TransactionVoidCallback() {
+		txManager.doInTransaction(new JpaTransactionVoidCallback() {
 			@Override
 			public void execute(EntityManager entityManager) {
 				entityManager.persist(ipad);
 			}
 		});
 		
-		Produto produto = txManager.doInTransactionWithReturn(new TransactionCallback<Produto>() {
+		Produto produto = txManager.doInTransactionWithReturn(new JpaTransactionCallback<Produto>() {
 			@Override
 			public Produto execute(EntityManager entityManager) {
 				return entityManager.find(Produto.class, ipad.getId());
@@ -77,7 +75,7 @@ public class TransactionManagerTest {
 	public void naoDeveInserirProdutosEmCasoDeErroDentroDaTransacao() {
 		
 		try {
-			txManager.doInTransaction(new TransactionVoidCallback() {
+			txManager.doInTransaction(new JpaTransactionVoidCallback() {
 				@Override
 				public void execute(EntityManager entityManager) {
 					entityManager.persist(new Produto("produto #1"));
@@ -92,7 +90,7 @@ public class TransactionManagerTest {
 			LOGGER.error("Erro ao tentar gravar varios produtos na mesma transação: ", e);
 		}
 		
-		Long total = txManager.doInTransactionWithReturn(new TransactionCallback<Long>() {
+		Long total = txManager.doInTransactionWithReturn(new JpaTransactionCallback<Long>() {
 			@Override
 			public Long execute(EntityManager entityManager) {
 				Long count = entityManager
