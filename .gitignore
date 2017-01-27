@@ -1,0 +1,38 @@
+# Gradle
+# ------
+.gradle
+/build
+/buildSrc/build
+/subprojects/*/build
+/subprojects/docs/src/samples/*/*/build
+
+# Eclipse
+# -------
+*.classpath
+*.project
+*.settings
+/bin
+/subprojects/*/bin
+atlassian-ide-plugin.xml
+*.class
+
+# Vim
+# ---
+*.sw[op]
+
+# Sublime Text
+# ------------
+*.sublime-*
+
+# OS X
+# ----
+.DS_Store
+
+# Logs
+# ----
+/*.log
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+*.~pck
+*.~sql
