@@ -1,4 +1,4 @@
-package br.com.triadworks.tx.jpa;
+package br.com.triadworks.tx.spi;
 
 public class DataAccessException extends RuntimeException {
 

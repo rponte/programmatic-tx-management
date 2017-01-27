@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.com.triadworks.sample.model.Produto;
+import br.com.triadworks.tx.spi.DataAccessException;
+import br.com.triadworks.tx.spi.TransactionCallback;
+import br.com.triadworks.tx.spi.TransactionVoidCallback;
 
 public class TransactionManagerTest {
 	

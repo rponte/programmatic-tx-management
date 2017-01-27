@@ -3,7 +3,12 @@ package br.com.triadworks.tx.jpa;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-public class TransactionManager {
+import br.com.triadworks.tx.spi.DataAccessException;
+import br.com.triadworks.tx.spi.TransactionCallback;
+import br.com.triadworks.tx.spi.TransactionManagerI;
+import br.com.triadworks.tx.spi.TransactionVoidCallback;
+
+public class TransactionManager implements TransactionManagerI {
 
 	private JpaUtils jpaUtils;
 
@@ -15,10 +20,10 @@ public class TransactionManager {
 		this.jpaUtils = jpaUtils;
 	}
 
-	/**
-	 * Executa uma Unidade de Trabalho dentro de um contexto transacional e
-	 * retorna o resultado da operação.
+	/* (non-Javadoc)
+	 * @see br.com.triadworks.tx.jpa.TransactionManagerI#doInTransactionWithReturn(br.com.triadworks.tx.jpa.TransactionCallback)
 	 */
+	@Override
 	public <T> T doInTransactionWithReturn(final TransactionCallback<T> callback) throws DataAccessException {
 
 		EntityManager entityManager = null;
@@ -44,9 +49,10 @@ public class TransactionManager {
 		}
 	}
 
-	/**
-	 * Executa uma Unidade de Trabalho dentro de um contexto transacional.
+	/* (non-Javadoc)
+	 * @see br.com.triadworks.tx.jpa.TransactionManagerI#doInTransaction(br.com.triadworks.tx.jpa.TransactionVoidCallback)
 	 */
+	@Override
 	public void doInTransaction(final TransactionVoidCallback callback) throws DataAccessException {
 		doInTransactionWithReturn(new TransactionCallback<Void>() {
 			@Override
