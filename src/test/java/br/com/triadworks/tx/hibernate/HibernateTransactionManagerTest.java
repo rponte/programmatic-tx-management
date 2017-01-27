@@ -14,13 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.com.triadworks.sample.model.Produto;
-import br.com.triadworks.tx.jpa.JpaTransactionManagerTest;
 import br.com.triadworks.tx.spi.DataAccessException;
 import br.com.triadworks.tx.spi.TransactionManager;
 
 public class HibernateTransactionManagerTest {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JpaTransactionManagerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HibernateTransactionManagerTest.class);
 
 	private TransactionManager<Session> txManager;
 	private SessionFactory sessionFactory;
