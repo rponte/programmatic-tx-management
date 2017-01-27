@@ -60,6 +60,20 @@ public class TransactionManagerTest {
 	}
 	
 	@Test
+	public void deveInserirNovoProdutoNoBancoDeDados_comJava8() {
+		
+		Produto ipad = new Produto("iPad Retina Display");
+		
+		txManager.doInTransaction((em) -> em.persist(ipad));
+		
+		Produto produto = txManager
+				.doInTransactionWithReturn((em) -> em.find(Produto.class, ipad.getId()));
+		
+		assertEquals("produto id", ipad.getId(), produto.getId());
+		assertEquals("produto nome", ipad.getNome(), produto.getNome());
+	}
+	
+	@Test
 	public void naoDeveInserirProdutosEmCasoDeErroDentroDaTransacao() {
 		
 		try {
@@ -86,6 +100,31 @@ public class TransactionManagerTest {
 					.getSingleResult();
 				return count;
 			}
+		});
+		
+		assertEquals("total de produtos gravados", 0, total.longValue());
+	}
+	
+	@Test
+	public void naoDeveInserirProdutosEmCasoDeErroDentroDaTransacao_comJava8() {
+		
+		try {
+			txManager.doInTransaction((em) ->  {
+				em.persist(new Produto("produto #1"));
+				em.persist(new Produto("produto #2"));
+				em.persist(new Produto("produto #3"));
+				em.persist(new Produto("produto #4"));
+				
+				throw new IllegalStateException("Erro qualquer");
+			});
+		} catch(DataAccessException e) {
+			LOGGER.error("Erro ao tentar gravar varios produtos na mesma transação: ", e);
+		}
+		
+		Long total = txManager.doInTransactionWithReturn((em) -> {
+				Long count = em.createQuery("select count(p) from Produto p", Long.class)
+					.getSingleResult();
+				return count;
 		});
 		
 		assertEquals("total de produtos gravados", 0, total.longValue());
