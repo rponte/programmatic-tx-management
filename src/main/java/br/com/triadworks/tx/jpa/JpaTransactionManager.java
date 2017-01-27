@@ -5,18 +5,18 @@ import javax.persistence.EntityTransaction;
 
 import br.com.triadworks.tx.spi.DataAccessException;
 import br.com.triadworks.tx.spi.TransactionCallback;
-import br.com.triadworks.tx.spi.TransactionManagerI;
+import br.com.triadworks.tx.spi.TransactionManager;
 import br.com.triadworks.tx.spi.TransactionVoidCallback;
 
-public class TransactionManager implements TransactionManagerI {
+public class JpaTransactionManager implements TransactionManager {
 
 	private JpaUtils jpaUtils;
 
-	public TransactionManager() {
+	public JpaTransactionManager() {
 		this(new JpaUtils());
 	}
 
-	public TransactionManager(JpaUtils jpaUtils) {
+	public JpaTransactionManager(JpaUtils jpaUtils) {
 		this.jpaUtils = jpaUtils;
 	}
 

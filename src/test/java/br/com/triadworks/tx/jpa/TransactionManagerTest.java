@@ -21,11 +21,11 @@ public class TransactionManagerTest {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionManagerTest.class);
 
-	private TransactionManager txManager;
+	private JpaTransactionManager txManager;
 	
 	@Before
 	public void setUp() {
-		txManager = new TransactionManager();
+		txManager = new JpaTransactionManager();
 	}
 	
 	@After
