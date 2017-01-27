@@ -16,9 +16,9 @@ import br.com.triadworks.sample.model.Produto;
 import br.com.triadworks.tx.spi.DataAccessException;
 import br.com.triadworks.tx.spi.TransactionManager;
 
-public class TransactionManagerTest {
+public class JpaTransactionManagerTest {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionManagerTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JpaTransactionManagerTest.class);
 
 	private TransactionManager<EntityManager> txManager;
 	private EntityManagerFactory entityManagerFactory;
