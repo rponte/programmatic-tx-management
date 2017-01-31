@@ -33,6 +33,7 @@ dependencies {
 
 	compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.6.Final'
 	compile group: 'org.hsqldb', name: 'hsqldb', version: '2.3.4'
+	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.6.0'
 
     /**
 	 * Testing dependencies
