@@ -9,14 +9,14 @@ import br.com.triadworks.tx.spi.TransactionCallback;
 public interface JdbcTransactionCallback<R> extends TransactionCallback<Connection, R> {
 
 	@Override
-	default R execute(Connection t) {
+	default R execute(Connection conn) {
 		try {
-			return transact(t);
+			return transact(conn);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public R transact(Connection t) throws SQLException;
+	public R transact(Connection connection) throws SQLException;
 	
 }

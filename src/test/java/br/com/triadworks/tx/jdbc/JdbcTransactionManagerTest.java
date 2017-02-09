@@ -61,17 +61,12 @@ public class JdbcTransactionManagerTest {
 		
 		txManager.doInTransaction(new JdbcTransactionVoidCallback() {
 			@Override
-			public void execute(Connection connection) {
-				try {
-					String sql = "insert into Produto(id, nome)"
-							   + " values((call next value for hibernate_sequence), ?)";
-					PreparedStatement stmt = connection.prepareStatement(sql);
-					
-					stmt.execute();
-					
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
+			public void transact(Connection connection) throws SQLException {
+				String sql = "insert into Produto(id, nome)"
+						   + " values((call next value for hibernate_sequence), ?)";
+				PreparedStatement stmt = connection.prepareStatement(sql);
+				
+				stmt.execute();
 			}
 		});
 		
@@ -121,7 +116,7 @@ public class JdbcTransactionManagerTest {
 		try {
 			txManager.doInTransaction(new JdbcTransactionVoidCallback() {
 				@Override
-				public void execute(Connection connection) {
+				public void transact(Connection connection) throws SQLException {
 					
 					throw new IllegalStateException("Erro qualquer");
 				}
