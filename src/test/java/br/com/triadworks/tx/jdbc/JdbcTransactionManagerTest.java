@@ -2,15 +2,17 @@ package br.com.triadworks.tx.jdbc;
 
 import static org.junit.Assert.assertEquals;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.sql.DataSource;
 
+import org.hibernate.jpa.boot.spi.Bootstrap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,11 +35,17 @@ public class JdbcTransactionManagerTest {
 	
 	@Before
 	public void setUp() {
-		// cria schema
-		entityManagerFactory = Persistence.createEntityManagerFactory("sample-pu");
-		
+		// cria datasource
 		DataSource dataSource = newDataSource();
 		txManager = new JdbcTransactionManager(dataSource);
+		
+		// cria schema
+		URL xml = this.getClass().getResource("/META-INF/persistence.xml");
+		String persistenceUnitName = "sample-pu";
+		entityManagerFactory = Bootstrap
+				.getEntityManagerFactoryBuilder(xml, persistenceUnitName, new HashMap<>())
+				.withDataSource(dataSource)
+				.build();
 	}
 	
 	private DataSource newDataSource() {
@@ -62,9 +70,15 @@ public class JdbcTransactionManagerTest {
 		txManager.doInTransaction(new JdbcTransactionVoidCallback() {
 			@Override
 			public void transact(Connection connection) throws SQLException {
-				String sql = "insert into Produto(id, nome)"
-						   + " values((call next value for hibernate_sequence), ?)";
-				PreparedStatement stmt = connection.prepareStatement(sql);
+				// carrega sequence
+				PreparedStatement stmt = connection.prepareStatement("call next value for hibernate_sequence");
+				ResultSet rs = stmt.executeQuery(); rs.next();
+				ipad.setId(rs.getInt(1));
+				
+				// insere registro
+				stmt = connection.prepareStatement("insert into Produto(id, nome) values(?, ?)");
+				stmt.setInt(1, ipad.getId());
+				stmt.setString(2, ipad.getNome());
 				
 				stmt.execute();
 			}
@@ -99,10 +113,34 @@ public class JdbcTransactionManagerTest {
 		
 		Produto ipad = new Produto("iPad Retina Display");
 		
-		txManager.doInTransaction((connection) -> { });
+		txManager.doInTransaction((JdbcTransactionVoidCallback)(connection) -> { 
+			// carrega sequence
+			PreparedStatement stmt = connection.prepareStatement("call next value for hibernate_sequence");
+			ResultSet rs = stmt.executeQuery(); rs.next();
+			ipad.setId(rs.getInt(1));
+			
+			// insere registro
+			stmt = connection.prepareStatement("insert into Produto(id, nome) values(?, ?)");
+			stmt.setInt(1, ipad.getId());
+			stmt.setString(2, ipad.getNome());
+			
+			stmt.execute();
+		});
 		
 		Produto produto = txManager
-				.doInTransactionWithReturn((connection) -> {
+				.doInTransactionWithReturn((JdbcTransactionCallback<Produto>)(connection) -> {
+					String sql = "select * from Produto";
+					PreparedStatement stmt = connection.prepareStatement(sql);
+					
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						Produto p = new Produto();
+						p.setId(rs.getInt("id"));
+						p.setNome(rs.getString("nome"));
+						
+						return p;
+					}
+					
 					return null;
 				});
 		
@@ -140,7 +178,7 @@ public class JdbcTransactionManagerTest {
 	public void naoDeveInserirProdutosEmCasoDeErroDentroDaTransacao_comJava8() {
 		
 		try {
-			txManager.doInTransaction((connection) ->  {
+			txManager.doInTransaction((JdbcTransactionVoidCallback)(connection) ->  {
 				
 				throw new IllegalStateException("Erro qualquer");
 			});
