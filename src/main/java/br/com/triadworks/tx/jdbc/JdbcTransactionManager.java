@@ -37,7 +37,7 @@ public class JdbcTransactionManager implements TransactionManager<Connection> {
 				try {
 					connection.rollback(); // rollback da transação
 				} catch (SQLException e1) {
-					e.printStackTrace();
+					e1.printStackTrace();
 				}
 			}
 			throw new DataAccessException(e);
