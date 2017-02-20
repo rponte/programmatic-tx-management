@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import br.com.triadworks.tx.spi.DataAccessException;
-import br.com.triadworks.tx.spi.TransactionCallback;
-import br.com.triadworks.tx.spi.TransactionManager;
-import br.com.triadworks.tx.spi.TransactionVoidCallback;
+import br.com.triadworks.tx.support.DataAccessException;
+import br.com.triadworks.tx.support.TransactionCallback;
+import br.com.triadworks.tx.support.TransactionManager;
+import br.com.triadworks.tx.support.TransactionVoidCallback;
 
 public class JdbcTransactionManager implements TransactionManager<Connection> {
 	

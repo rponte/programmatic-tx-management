@@ -4,10 +4,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-import br.com.triadworks.tx.spi.DataAccessException;
-import br.com.triadworks.tx.spi.TransactionCallback;
-import br.com.triadworks.tx.spi.TransactionManager;
-import br.com.triadworks.tx.spi.TransactionVoidCallback;
+import br.com.triadworks.tx.support.DataAccessException;
+import br.com.triadworks.tx.support.TransactionCallback;
+import br.com.triadworks.tx.support.TransactionManager;
+import br.com.triadworks.tx.support.TransactionVoidCallback;
 
 public class JpaTransactionManager implements TransactionManager<EntityManager> {
 

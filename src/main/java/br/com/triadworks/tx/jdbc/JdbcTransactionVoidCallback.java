@@ -3,7 +3,7 @@ package br.com.triadworks.tx.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import br.com.triadworks.tx.spi.TransactionVoidCallback;
+import br.com.triadworks.tx.support.TransactionVoidCallback;
 
 @FunctionalInterface
 public interface JdbcTransactionVoidCallback extends TransactionVoidCallback<Connection> {

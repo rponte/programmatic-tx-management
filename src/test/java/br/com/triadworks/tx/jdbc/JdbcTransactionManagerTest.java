@@ -23,8 +23,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import br.com.triadworks.sample.model.Produto;
 import br.com.triadworks.tx.jpa.JpaTransactionManagerTest;
-import br.com.triadworks.tx.spi.DataAccessException;
-import br.com.triadworks.tx.spi.TransactionManager;
+import br.com.triadworks.tx.support.DataAccessException;
+import br.com.triadworks.tx.support.TransactionManager;
 
 public class JdbcTransactionManagerTest {
 

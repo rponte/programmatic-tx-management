@@ -3,7 +3,7 @@ package br.com.triadworks.tx.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import br.com.triadworks.tx.spi.TransactionCallback;
+import br.com.triadworks.tx.support.TransactionCallback;
 
 @FunctionalInterface
 public interface JdbcTransactionCallback<R> extends TransactionCallback<Connection, R> {
