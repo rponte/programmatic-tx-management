@@ -6,6 +6,9 @@
 
 	<!-- Unidade de persistencia com o nome "lanceunico" -->
 	<persistence-unit name="sample-pu">
+	
+		<class>br.com.triadworks.sample.model.Produto</class>
+	
 		<properties>
 			<!-- Propriedades JDBC -->
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
